@@ -4,3 +4,5 @@ __pycache__/
 .idea/
 
 assets/images/
+tb_logs/
+lightning_logs/
