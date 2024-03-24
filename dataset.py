@@ -53,7 +53,6 @@ class SnacksDataModule(pl.LightningDataModule):
 
             transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
 
-            transforms.RandomEqualize(),
 
             transforms.ToTensor()
         ])
@@ -89,11 +88,17 @@ class SnacksDataModule(pl.LightningDataModule):
             transforms.ToTensor(),
         ])
 
+        histogramm = transforms.Compose([
+            transforms.RandomEqualize(),
+            transforms.ToTensor()
+        ])
+
         self.before = ImageFolder(root=str(self.data_dir / 'test'), transform=transforms.Compose([transforms.ToTensor()]))
         self.colors_after = ImageFolder(root=str(self.data_dir / 'test'), transform=color_transform)
         self.rotation_after = ImageFolder(root=str(self.data_dir / 'test'), transform=rotation_transform)
         self.flip_after = ImageFolder(root=str(self.data_dir / 'test'), transform=flip_transform)
         self.crop_after = ImageFolder(root=str(self.data_dir / 'test'), transform=crop_transform)
+        self.histogram = ImageFolder(root=str(self.data_dir / 'test'), transform=histogramm)
 
 
     def train_dataloader(self):
