@@ -4,5 +4,7 @@ __pycache__/
 .idea/
 
 assets/images/
+assets/dataset/
+assets/split_dataset/
 tb_logs/
 lightning_logs/
