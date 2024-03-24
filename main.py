@@ -14,7 +14,7 @@ from model import ResNet18
 # summary(resnet18, (3, 224, 224))
 
 data_module = SnacksDataModule(
-    data_dir=Path('assets/images/data'),
+    data_dir=Path('assets/data'),
     batch_size=1
 )
 data_module.setup()
@@ -33,7 +33,7 @@ for image, label in iter(data_module.before):
     axes.flat[i].set_yticks([])
     i += 1
 
-for image, label in iter(data_module.crop_after):
+for image, label in iter(data_module.flip_after):
     if i >= 10:
         break
 
