@@ -40,69 +40,29 @@ class SnacksDataModule(pl.LightningDataModule):
 
         self.data_dir = data_dir
         self.batch_size = batch_size
-        self.transform = transforms.Compose(
-            [transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+        # self.transform = transforms.Compose(
+        #     [transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
     def setup(self, stage=None):
         train_transform = transforms.Compose([
-            transforms.ToTensor(),
-
             transforms.RandomResizedCrop(256),
             transforms.RandomHorizontalFlip(),
-            transforms.RandomRotation(10),
-
-            transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
-
-
+            # transforms.RandomRotation(15),
+            # transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
             transforms.ToTensor()
         ])
 
         val_transform = transforms.Compose([
-            transforms.Resize(256),
             transforms.CenterCrop(256),
-            transforms.ToTensor(),
+            transforms.ToTensor()
         ])
 
         self.train_dataset = ImageFolder(root=str(self.data_dir / 'train'), transform=train_transform)
         self.val_dataset = ImageFolder(root=str(self.data_dir / 'val'), transform=val_transform)
         self.test_dataset = ImageFolder(root=str(self.data_dir / 'test'), transform=val_transform)
 
-        # TODO wyjebać poniższe
-        color_transform = transforms.Compose([
-            transforms.ColorJitter(brightness=0.2, contrast=0.1, saturation=0.1, hue=0.1),
-            transforms.ToTensor(),
-        ])
-
-        rotation_transform = transforms.Compose([
-            transforms.RandomRotation(10),
-            transforms.ToTensor(),
-        ])
-
-        flip_transform = transforms.Compose([
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor(),
-        ])
-
-        crop_transform = transforms.Compose([
-            transforms.CenterCrop(256),
-            transforms.ToTensor(),
-        ])
-
-        histogramm = transforms.Compose([
-            transforms.RandomEqualize(),
-            transforms.ToTensor()
-        ])
-
-        self.before = ImageFolder(root=str(self.data_dir / 'test'), transform=transforms.Compose([transforms.ToTensor()]))
-        self.colors_after = ImageFolder(root=str(self.data_dir / 'test'), transform=color_transform)
-        self.rotation_after = ImageFolder(root=str(self.data_dir / 'test'), transform=rotation_transform)
-        self.flip_after = ImageFolder(root=str(self.data_dir / 'test'), transform=flip_transform)
-        self.crop_after = ImageFolder(root=str(self.data_dir / 'test'), transform=crop_transform)
-        self.histogram = ImageFolder(root=str(self.data_dir / 'test'), transform=histogramm)
-
-
     def train_dataloader(self):
-        return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True, num_workers=4)
+        return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True, num_workers=2)
 
     def val_dataloader(self):
         return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=2)

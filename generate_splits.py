@@ -35,4 +35,4 @@ def split_data(dataset_path: Path):
             shutil.copy(class_path / train_image, Path(f'assets/split_dataset/train/{cls}') / train_image)
 
 
-split_data(Path('assets/data'))
+split_data(Path('assets/dataset'))

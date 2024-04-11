@@ -7,27 +7,39 @@ from lightning.pytorch.loggers import TensorBoardLogger
 import matplotlib.pyplot as plt
 
 from dataset import SnacksDataModule
-from model import ResNet18
+from model import ResNet18, ResNet34
 
-# resnet18 = ResNet18(3, outputs=20)
-# resnet18.to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+resnet18 = ResNet18(3, outputs=5)
+resnet18.to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
 # summary(resnet18, (3, 224, 224))
+
+resnet34 = ResNet34(3, outputs=5)
+resnet34.to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
 
 data_module = SnacksDataModule(
     data_dir=Path('assets/split_dataset'),
-    batch_size=1
+    batch_size=16
 )
 data_module.setup()
 
-fig, axes = plt.subplots(2, 5, figsize=(10, 5))
+print("Snacks dataset sizes:")
+print("Train:", len(data_module.train_dataset))
+print("Validation:", len(data_module.val_dataset))
+print("Test:", len(data_module.test_dataset))
 
-i = 0
-for image, label in iter(data_module.before):
-    if i >= 5:
-        break
+tensorboard_logger = TensorBoardLogger(
+    save_dir='tb_logs',
+    name='resnet34'
+)
 
-    image = image.squeeze().permute(1, 2, 0)
+trainer = pl.Trainer(
+    accelerator='gpu',
+    devices=1,
+    max_epochs=50,
+    logger=tensorboard_logger,
+)
 
+<<<<<<< HEAD
     axes.flat[i].imshow(image)
     axes.flat[i].set_xticks([])
     axes.flat[i].set_yticks([])
@@ -65,3 +77,6 @@ plt.show()
 # )
 
 # trainer.fit(resnet18, data_module)
+=======
+trainer.fit(resnet34, data_module)
+>>>>>>> 8abcfa0ad015 (add val step and start tweaking some hyperparameters)
