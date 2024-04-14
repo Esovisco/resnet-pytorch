@@ -15,8 +15,9 @@ resnet18.to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
 # summary(resnet18, (3, 224, 224))
 
 # resnet34 = ResNet34(3, outputs=5)
+resnet34 = ResNet(in_channels=3, repeat=[3, 4, 6, 3], use_bottleneck=False, outputs=5, optimizer_lr=0.008, scheduler_step=20, scheduler_gamma=0.1)
 # resnet34 = ResNet34.load_from_checkpoint("tb_logs/resnet34/version_14/checkpoints/epoch=49-step=4400.ckpt", in_channels=3, outputs=5)
-# resnet34.to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+resnet34.to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
 
 resnet50 = ResNet(in_channels=3, repeat=[3, 4, 6, 3], use_bottleneck=True, outputs=5, optimizer_lr=0.01)
 resnet50.to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
@@ -37,7 +38,7 @@ print("Test:", len(data_module.test_dataset))
 
 tensorboard_logger = TensorBoardLogger(
     save_dir='tb_logs',
-    name='resnet18'
+    name='resnet34'
 )
 
 trainer = pl.Trainer(
@@ -49,4 +50,4 @@ trainer = pl.Trainer(
 
 torch.set_float32_matmul_precision('medium')
 
-trainer.fit(resnet18, data_module)
+trainer.fit(resnet34, data_module)
