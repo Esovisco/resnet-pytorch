@@ -45,16 +45,27 @@ class SnacksDataModule(pl.LightningDataModule):
 
     def setup(self, stage=None):
         train_transform = transforms.Compose([
-            transforms.RandomResizedCrop(256),
+
+            # transforms.RandomCrop(400, pad_if_needed=True, padding_mode='reflect'),
+
+
+
+            transforms.ToTensor(),
+            # transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+            transforms.Resize((224, 224)),
+            # transforms.RandomApply([
+            #     transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
+            # ], 0.2),
+            # transforms.RandomApply([
+            #     transforms.RandomRotation(10),
+            # ], 0.2),
+            # transforms.RandomResizedCrop(224),
             transforms.RandomHorizontalFlip(),
-            # transforms.RandomRotation(15),
-            # transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
-            transforms.ToTensor()
         ])
 
         val_transform = transforms.Compose([
-            transforms.CenterCrop(256),
-            transforms.ToTensor()
+            transforms.ToTensor(),
+            transforms.Resize((224, 224)),
         ])
 
         self.train_dataset = ImageFolder(root=str(self.data_dir / 'train'), transform=train_transform)
