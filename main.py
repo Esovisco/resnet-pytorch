@@ -46,6 +46,7 @@ trainer = pl.Trainer(
     devices=1,
     max_epochs=100,
     logger=tensorboard_logger,
+    accumulate_grad_batches=4,
 )
 
 torch.set_float32_matmul_precision('medium')
