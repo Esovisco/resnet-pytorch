@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from dataset import SnacksDataModule
 from model import ResNet
 import torchvision.transforms as transforms
+from torchsummary import summary
 
 
 def index_to_prediction(idx):
@@ -27,6 +28,11 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 resnet18 = ResNet.load_from_checkpoint('tb_logs/resnet18/version_4/checkpoints/epoch=49-step=4400.ckpt', in_channels=3, repeat=[2, 2, 2, 2], use_bottleneck=False, outputs=5, optimizer_lr=0.01)
 resnet18.to(device)
 resnet18.eval()
+
+resnet34 = ResNet.load_from_checkpoint('tb_logs/resnet34/version_19/checkpoints/epoch=99-step=2200.ckpt',
+                                       in_channels=3, repeat=[3, 4, 6, 3], use_bottleneck=False, outputs=5,)
+
+summary(resnet34, (3, 224, 224))
 
 data_module = SnacksDataModule(
     data_dir=Path('assets/split_dataset'),
@@ -50,6 +56,10 @@ for i, (image, label) in enumerate(random_samples):
 
     with torch.no_grad():
         output = resnet18(dev_image.unsqueeze(0))
+
+    print(f'image {i}, label {index_to_prediction(label)}')
+    for j, out in enumerate(list(list(output)[0])):
+        print(f'    {index_to_prediction(j)}: {out.item()}')
 
     _, predicted = torch.max(output, 1)
 

@@ -20,21 +20,28 @@ class Split1DataModule(pl.LightningDataModule):
 
         self.data_dir = data_dir
         self.batch_size = batch_size
-        self.transform = transforms.Compose(
-            [transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
     def setup(self, stage=None):
 
-        self.train_dataset = ImageFolder(root=str(self.data_dir / 'train'), transform=transforms.ToTensor())
-        self.val_dataset = ImageFolder(root=str(self.data_dir / 'val'), transform=transforms.ToTensor())
-        self.test_dataset = ImageFolder(root=str(self.data_dir / 'test'), transform=transforms.ToTensor())
+        self.train_dataset = ImageFolder(root=str(self.data_dir / 'train'), transform=transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Resize((224, 224)),
+        ]))
+        self.val_dataset = ImageFolder(root=str(self.data_dir / 'val'), transform=transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Resize((224, 224)),
+        ]))
+        self.test_dataset = ImageFolder(root=str(self.data_dir / 'test'), transform=transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Resize((224, 224)),
+        ]))
 
     def train_dataloader(self):
-        return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True, num_workers=4)
+        return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True, num_workers=8)
 
     def val_dataloader(self):
-        return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=2)
+        return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=8)
 
     def test_dataloader(self):
-        return DataLoader(self.test_dataset, batch_size=self.batch_size, num_workers=2)
+        return DataLoader(self.test_dataset, batch_size=self.batch_size, num_workers=8)
 
