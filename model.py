@@ -161,6 +161,20 @@ class ResNet(pl.LightningModule):
 
         return loss
 
+    def test_step(self, batch, batch_idx):
+        imgs, labels = batch
+
+        preds = self.forward(imgs)
+
+        loss = self.loss(preds, labels)
+
+        acc = (preds.argmax(dim=-1) == labels).float().mean()
+
+        self.log("test_loss", loss, on_step=False, on_epoch=True)
+        self.log("test_acc", acc, on_step=False, on_epoch=True)
+
+        return loss
+
     def configure_optimizers(self):
         optimizer = torch.optim.AdamW(self.parameters(), lr=self.optimizer_lr)
         scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=self.scheduler_step, gamma=self.scheduler_gamma)
